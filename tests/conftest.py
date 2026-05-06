@@ -16,7 +16,7 @@ class DummyModelBasedAgent(ModelBasedAgent):
     def __init__(self):
         super().__init__()
 
-    def get_action(self, obs, planning_env):
+    def get_action(self, obs, planning_env, **kwargs):
         return planning_env.action_space.sample()
 
 
@@ -25,7 +25,7 @@ class DummyModelFreeAgent(ModelFreeAgent):
         super().__init__()
         self._action_space = action_space
 
-    def get_action(self, obs):
+    def get_action(self, obs, **kwargs):
         return self._action_space.sample()
 
 
