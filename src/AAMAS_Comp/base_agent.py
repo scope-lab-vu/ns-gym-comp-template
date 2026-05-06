@@ -1,7 +1,7 @@
 from ns_gym.base import Agent
 import gymnasium as gym
 from typing import Dict
-import numpy as np 
+import numpy as np
 import time
 
 """Make sure your agents inherit from these classes so that they adhere to the required interfaces. 
@@ -13,18 +13,18 @@ class ModelBasedAgent(Agent):
     def __init__(self) -> None:
         super().__init__()
 
-    def get_action(self, obs: Dict, planning_env: gym.Env):
+    def get_action(self, obs: Dict, planning_env: gym.Env, **kwargs):
         raise NotImplementedError("Please implement get_action method")
-    
-    def act(self, obs, planning_env):
+
+    def act(self, obs, planning_env, **kwargs):
         """Agent sub-class requries this method to be implemented
         """
-        return self.get_action(obs, planning_env)
-    
-    def validate_and_get_action(self, obs: Dict, planning_env: gym.Env):
+        return self.get_action(obs, planning_env, **kwargs)
+
+    def validate_and_get_action(self, obs: Dict, planning_env: gym.Env, reward=None, done=None):
         """Called by the competition evaluator."""
         start_time = time.perf_counter()
-        action = self.get_action(obs, planning_env)
+        action = self.get_action(obs, planning_env, reward=reward, done=done)
         end_time = time.perf_counter()
         if not isinstance(action, (np.ndarray, int, np.integer)):
             raise TypeError(f"Action must be a numpy array or int, got {type(action)}")
@@ -43,16 +43,16 @@ class ModelFreeAgent(Agent):
     def __init__(self) -> None:
         super().__init__()
 
-    def get_action(self, obs: Dict):
+    def get_action(self, obs: Dict, **kwargs):
         raise NotImplementedError("Please implement get_action method")
 
-    def act(self, obs):
-        return self.get_action(obs)
-    
-    def validate_and_get_action(self, obs: Dict, action_space: gym.Space):
+    def act(self, obs, **kwargs):
+        return self.get_action(obs, **kwargs)
+
+    def validate_and_get_action(self, obs: Dict, action_space: gym.Space, reward=None, done=None):
         """Called by the competition evaluator."""
         start_time = time.perf_counter()
-        action = self.get_action(obs)
+        action = self.get_action(obs, reward=reward, done=done)
         end_time = time.perf_counter()
 
         assert action_space.contains(action), f"Invalid action: {action}"
@@ -60,6 +60,7 @@ class ModelFreeAgent(Agent):
         decision_time = end_time - start_time
 
         return action, decision_time
+    
     
 
 
@@ -79,9 +80,10 @@ class SB3Agent(ModelFreeAgent):
         self.deterministic = deterministic
         self.vec_normalize = vec_normalize
 
-    def get_action(self, obs: Dict):
+    def get_action(self, obs: Dict, **kwargs):
         state = obs["state"]
         if self.vec_normalize is not None:
             state = self.vec_normalize.normalize_obs(state)
         action, _ = self.model.predict(state, deterministic=self.deterministic)
         return action
+    

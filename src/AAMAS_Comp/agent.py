@@ -14,8 +14,12 @@ class MyModelBasedAgent(ModelBasedAgent):
         raise NotImplementedError
 
 
-    def get_action(self, obs: Dict, planning_env):
+    def get_action(self, obs: Dict, planning_env, **kwargs):
         """YOUR CODE HERE
+
+        Optional kwargs forwarded by the evaluator: `reward`, `done` (the
+        result of the previous step). Useful for in-context RL agents that
+        need to store transitions; ignore them otherwise.
         """
         raise NotImplementedError
     
@@ -30,8 +34,12 @@ class MyModelFreeAgent(ModelFreeAgent):
         """
         raise NotImplementedError
 
-    def get_action(self, obs):
+    def get_action(self, obs, **kwargs):
         """YOUR CODE HERE
+
+        Optional kwargs forwarded by the evaluator: `reward`, `done` (the
+        result of the previous step). Useful for in-context RL agents that
+        need to store transitions; ignore them otherwise.
         """
         return None
     

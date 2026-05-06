@@ -32,7 +32,7 @@ class AAMASCompBaselineMCTS(ModelBasedAgent):
         self.gamma = gamma 
 
     
-    def get_action(self, obs: Dict, planning_env: gym.Env):
+    def get_action(self, obs: Dict, planning_env: gym.Env, **kwargs):
 
         state = obs["state"]
 

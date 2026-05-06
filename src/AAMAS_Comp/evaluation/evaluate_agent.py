@@ -53,10 +53,14 @@ def run_single_episode(env, agent, seed):
 
         if is_model_based_agent:
             planning_env = env.get_planning_env()
-            action, decision_time = agent.validate_and_get_action(obs, planning_env)
+            action, decision_time = agent.validate_and_get_action(
+                obs, planning_env, reward=reward, done=done
+            )
 
         else:
-            action, decision_time = agent.validate_and_get_action(obs, env.action_space)
+            action, decision_time = agent.validate_and_get_action(
+                obs, env.action_space, reward=reward, done=done
+            )
 
         obs, reward, done, truncated, info = env.step(action)
 
